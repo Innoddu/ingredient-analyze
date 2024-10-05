@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface DetectedObject {
   name: string;
@@ -22,19 +23,22 @@ const FoodUpload = () => {
   const [loading, setLoading] = useState(false);
 
   // Function to convert an image to Base64 format
-  const toBase64 = (file: File) => new Promise<string | ArrayBuffer | null>((resolve, reject) => {
+  const toBase64 = (file: File): Promise<string> => 
+  new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
+    reader.onload = () => resolve(reader.result as string);  // Cast result as string
     reader.onerror = error => reject(error);
   });
 
   // Function to handle the image selection and conversion to Base64
-  const handleImageChange = async (event: any) => {
-    const file = event.target.files[0];
-    if (file) {
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Make sure target and files are not null
+    const target = event.target as HTMLInputElement;  // Type narrowing
+    if (target?.files?.[0]) {
+      const file = target.files[0];
       const imageBase64 = await toBase64(file);
-      setSelectedImage(imageBase64 as string);
+      setSelectedImage(imageBase64);
       setDetectedObjects([]);  // Reset previously detected objects when a new image is selected
       setAnalysisFailed(false); // Reset analysis failed state on new image selection
     }
@@ -105,7 +109,13 @@ const FoodUpload = () => {
         {/* Show the selected image after it is uploaded */}
         {selectedImage && (
           <div className="mb-4">
-            <img src={selectedImage} alt="Selected" className="w-full h-auto rounded-md" />
+            <Image
+              src={selectedImage}
+              alt="Selected"
+              width={500} 
+              height={300} 
+              className="w-full h-auto rounded-md"
+            />
           </div>
         )}
   
