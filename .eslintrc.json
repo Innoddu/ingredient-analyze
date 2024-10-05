@@ -1,3 +1,7 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",  // 'any' 타입 허용
+    "@next/next/no-img-element": "off"            // 'img' 태그 허용
+  }
 }
