@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ImageAnnotatorClient } from '@google-cloud/vision';
-import path from 'path';
+
 // Define interface for detected objects
 interface DetectedObject {
   name: string;
