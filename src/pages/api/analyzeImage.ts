@@ -13,12 +13,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       // Initialize Google Cloud Vision API client with credentials
-      const keyPath = path.resolve(process.env.GOOGLE_APPLICATION_CREDENTIALS || '');
+      const credentials = process.env.GOOGLE_APPLICATION_CREDENTIALS ? JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS) : null;
+
+      if (!credentials) {
+        throw new Error('Google Cloud credentials not provided');
+      }
 
       const client = new ImageAnnotatorClient({
-        keyFilename: keyPath,  
+        credentials,  
       });
-
 
       // Convert Base64 image to a buffer
       const imageBase64 = req.body.image.split(',')[1]; // Extract image data from the Data URI format
