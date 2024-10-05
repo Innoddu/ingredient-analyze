@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ImageAnnotatorClient } from '@google-cloud/vision';
-
+import path from 'path';
 // Define interface for detected objects
 interface DetectedObject {
   name: string;
@@ -13,9 +13,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       // Initialize Google Cloud Vision API client with credentials
+      const keyPath = path.resolve(process.env.GOOGLE_APPLICATION_CREDENTIALS || '');
+
       const client = new ImageAnnotatorClient({
-        keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS || 'src/keys/google-cloud-api-key.json', // Load key from environment variables
+        keyFilename: keyPath,  
       });
+
 
       // Convert Base64 image to a buffer
       const imageBase64 = req.body.image.split(',')[1]; // Extract image data from the Data URI format
